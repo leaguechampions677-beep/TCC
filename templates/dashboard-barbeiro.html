@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Barbearia Fio de Ouro - Dashboard Barbeiro</title>
+    <link rel="stylesheet" href="/static/styles.css">
+    <link rel="stylesheet" href="/static/dashboard.css">
+</head>
+<body>
+    <header>
+        <div class="logo">
+            <h1>FIO DE OURO</h1>
+        </div>
+        <nav>
+            <ul>
+                <li><a href="/index.html">Início</a></li>
+                <li><a href="#" id="logout-barbeiro">Sair</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <section class="dashboard">
+            <h2>Dashboard do Barbeiro</h2>
+            <div id="barbeiro-info">
+                <!-- Informações do barbeiro serão carregadas aqui -->
+            </div>
+
+            <h3>Meus Agendamentos</h3>
+            <div id="agendamentos-barbeiro">
+                <!-- Agendamentos serão carregados aqui -->
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 Barbearia Fio de Ouro. Todos os direitos reservados.</p>
+    </footer>
+
+    <script src="/app.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            const barbeiroLogado = JSON.parse(localStorage.getItem('barbeiroLogado'));
+            if (!barbeiroLogado) {
+                window.location.href = '/login-barbeiro.html';
+                return;
+            }
+
+            // Exibir informações do barbeiro
+            document.getElementById('barbeiro-info').innerHTML = `
+                <p><strong>Nome:</strong> ${barbeiroLogado.nome}</p>
+                <p><strong>E-mail:</strong> ${barbeiroLogado.email}</p>
+                <p><strong>Especialidade:</strong> ${barbeiroLogado.especialidade}</p>
+            `;
+
+            // Carregar agendamentos
+            try {
+                const response = await fetch(`/barber-appointments/${barbeiroLogado.email}`);
+                const agendamentos = await response.json();
+                const agendamentosDiv = document.getElementById('agendamentos-barbeiro');
+                if (agendamentos.length > 0) {
+                    agendamentos.forEach(agendamento => {
+                        const div = document.createElement('div');
+                        div.className = 'agendamento-item';
+                        div.innerHTML = `
+                            <p><strong>Cliente:</strong> ${agendamento.usuario_nome}</p>
+                            <p><strong>Serviço:</strong> ${agendamento.servico}</p>
+                            <p><strong>Data:</strong> ${agendamento.data}</p>
+                            <p><strong>Hora:</strong> ${agendamento.hora}</p>
+                        `;
+                        agendamentosDiv.appendChild(div);
+                    });
+                } else {
+                    agendamentosDiv.innerHTML = '<p>Nenhum agendamento encontrado.</p>';
+                }
+            } catch (error) {
+                console.error('Erro ao carregar agendamentos:', error);
+            }
+
+            // Logout
+            document.getElementById('logout-barbeiro').addEventListener('click', () => {
+                localStorage.removeItem('barbeiroLogado');
+                window.location.href = '/index.html';
+            });
+        });
+    </script>
+</body>
+</html>

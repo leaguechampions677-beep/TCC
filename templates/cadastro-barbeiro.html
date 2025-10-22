@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Barbearia Fio de Ouro - Cadastro Barbeiro</title>
+    <link rel="stylesheet" href="/static/styles.css">
+    <link rel="stylesheet" href="/static/login.css">
+</head>
+<body>
+    <header>
+        <div class="logo">
+            <h1>FIO DE OURO</h1>
+        </div>
+        <nav>
+            <ul>
+                <li><a href="/index.html">Início</a></li>
+                <li><a href="/login-barbeiro.html">Login Barbeiro</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main class="form-container">
+        <h2>Cadastro de Barbeiro</h2>
+        <form id="cadastro-barbeiro-form">
+            <div class="form-group">
+                <label for="nome-barbeiro">Nome:</label>
+                <input type="text" id="nome-barbeiro" required>
+            </div>
+            <div class="form-group">
+                <label for="email-barbeiro">E-mail:</label>
+                <input type="email" id="email-barbeiro" required>
+            </div>
+            <div class="form-group">
+                <label for="senha-barbeiro">Senha:</label>
+                <input type="password" id="senha-barbeiro" required>
+            </div>
+            <div class="form-group">
+                <label for="confirmar-senha-barbeiro">Confirmar Senha:</label>
+                <input type="password" id="confirmar-senha-barbeiro" required>
+            </div>
+            <div class="form-group">
+                <label for="especialidade">Especialidade:</label>
+                <select id="especialidade" required>
+                    <option value="">Selecione uma especialidade</option>
+                    <option value="Cortes modernos">Cortes modernos</option>
+                    <option value="Barbas e bigodes">Barbas e bigodes</option>
+                    <option value="Cortes clássicos">Cortes clássicos</option>
+                    <option value="Cortes femininos">Cortes femininos</option>
+                    <option value="Coloração">Coloração</option>
+                </select>
+            </div>
+            <button type="submit">Cadastrar</button>
+        </form>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 Barbearia Fio de Ouro. Todos os direitos reservados.</p>
+    </footer>
+
+    <script src="/app.js"></script>
+</body>
+</html>

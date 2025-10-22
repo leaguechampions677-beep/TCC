@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Barbearia Fio de Ouro - Início</title>
-    <link rel="stylesheet" href="../static/styles.css">
+    <link rel="stylesheet" href="/static/styles.css">
 </head>
 <body>
     <header>
@@ -16,16 +16,106 @@
                 <li><a href="index.html">Início</a></li>
                 <li><a href="agendamento.html">Agendar</a></li>
                 <li><a href="login.html">Login</a></li>
+                <li><a href="cadastro-barbeiro.html">Cadastro Barbeiro</a></li>
+                <li><a href="login-barbeiro.html">Login Barbeiro</a></li>
             </ul>
         </nav>
     </header>
 
-    <main style="text-align: center; padding: 4rem 2rem;">
-        <h2>Bem-vindo à Barbearia Fio de Ouro</h2>
-        <p>Agende seu corte de cabelo ou barba com os melhores profissionais.</p>
-        <br>
-        <a href="agendamento.html" style="display: inline-block; padding: 1rem 2rem; background-color: #FFD700; color: #000; text-decoration: none; border-radius: 4px; font-weight: bold;">Agendar Agora</a>
+    <main>
+        <section class="hero">
+            <h2>Bem-vindo à Barbearia Fio de Ouro</h2>
+            <p>Agende seu corte com os melhores barbeiros da cidade.</p>
+        </section>
+
+        <section class="barbeiros">
+            <h2>Nossos Barbeiros</h2>
+            <div id="barbeiros-list" class="barbeiros-grid">
+                <!-- Barbeiros serão carregados aqui -->
+            </div>
+        </section>
+
+        <section class="horarios">
+            <h2>Horários Disponíveis</h2>
+            <div id="horarios-list" class="horarios-grid">
+                <!-- Horários serão carregados aqui -->
+            </div>
+        </section>
+
+        <section class="meus-agendamentos">
+            <h2>Meus Agendamentos</h2>
+            <div id="agendamentos-list">
+                <!-- Agendamentos serão carregados aqui -->
+            </div>
+        </section>
     </main>
+
+    <script src="/app.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            // Carregar barbeiros
+            try {
+                const response = await fetch('/barbeiros');
+                const barbeiros = await response.json();
+                const barbeirosList = document.getElementById('barbeiros-list');
+                barbeiros.forEach(barbeiro => {
+                    const div = document.createElement('div');
+                    div.className = 'barbeiro-card';
+                    div.innerHTML = `
+                        <h3>${barbeiro.nome}</h3>
+                        <p>${barbeiro.especialidade}</p>
+                    `;
+                    barbeirosList.appendChild(div);
+                });
+            } catch (error) {
+                console.error('Erro ao carregar barbeiros:', error);
+            }
+
+            // Carregar horários
+            try {
+                const response = await fetch('/horarios');
+                const horarios = await response.json();
+                const horariosList = document.getElementById('horarios-list');
+                horarios.forEach(horario => {
+                    const div = document.createElement('div');
+                    div.className = 'horario-item';
+                    div.textContent = horario;
+                    horariosList.appendChild(div);
+                });
+            } catch (error) {
+                console.error('Erro ao carregar horários:', error);
+            }
+
+            // Carregar agendamentos do usuário logado
+            const usuarioLogado = JSON.parse(localStorage.getItem('usuarioLogado'));
+            if (usuarioLogado) {
+                try {
+                    const response = await fetch(`/appointments/${usuarioLogado.email}`);
+                    const agendamentos = await response.json();
+                    const agendamentosList = document.getElementById('agendamentos-list');
+                    if (agendamentos.length > 0) {
+                        agendamentos.forEach(agendamento => {
+                            const div = document.createElement('div');
+                            div.className = 'agendamento-item';
+                            div.innerHTML = `
+                                <p><strong>Serviço:</strong> ${agendamento.servico}</p>
+                                <p><strong>Barbeiro:</strong> ${agendamento.barbeiro_nome}</p>
+                                <p><strong>Data:</strong> ${agendamento.data}</p>
+                                <p><strong>Hora:</strong> ${agendamento.hora}</p>
+                            `;
+                            agendamentosList.appendChild(div);
+                        });
+                    } else {
+                        agendamentosList.innerHTML = '<p>Nenhum agendamento encontrado.</p>';
+                    }
+                } catch (error) {
+                    console.error('Erro ao carregar agendamentos:', error);
+                }
+            } else {
+                document.getElementById('agendamentos-list').innerHTML = '<p>Faça login para ver seus agendamentos.</p>';
+            }
+        });
+    </script>
 
     <footer>
         <p>&copy; 2024 Barbearia Fio de Ouro. Todos os direitos reservados.</p>

@@ -4,8 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Agendamento - Barbearia Fio de Ouro</title>
-    <link rel="stylesheet" href="../static/styles.css">
-    <link rel="stylesheet" href="../static/login.css">
+    <link rel="stylesheet" href="/static/styles.css">
+    <link rel="stylesheet" href="/static/login.css">
 </head>
 <body>
     <header>
@@ -34,6 +34,13 @@
                 </select>
             </div>
             <div class="form-group">
+                <label for="barbeiro">Barbeiro:</label>
+                <select id="barbeiro" name="barbeiro" required>
+                    <option value="">Selecione um barbeiro</option>
+                    <!-- Barbeiros serão carregados aqui -->
+                </select>
+            </div>
+            <div class="form-group">
                 <label for="data">Data:</label>
                 <input type="date" id="data" name="data" required>
             </div>
@@ -57,6 +64,35 @@
         <p>&copy; 2024 Barbearia Fio de Ouro. Todos os direitos reservados.</p>
     </footer>
 
-    <script src="../app.js"></script>
+    <script src="/app.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            // Carregar barbeiros
+            try {
+                const response = await fetch('/barbeiros');
+                const barbeiros = await response.json();
+                const barbeiroSelect = document.getElementById('barbeiro');
+                barbeiros.forEach(barbeiro => {
+                    const option = document.createElement('option');
+                    option.value = barbeiro.email; // Usar email como valor
+                    option.textContent = `${barbeiro.nome} - ${barbeiro.especialidade}`;
+                    barbeiroSelect.appendChild(option);
+                });
+            } catch (error) {
+                console.error('Erro ao carregar barbeiros:', error);
+            }
+
+            // Preencher formulário com parâmetros da URL
+            const urlParams = new URLSearchParams(window.location.search);
+            const servico = urlParams.get('servico');
+            if (servico) document.getElementById('servico').value = servico;
+            const barbeiro = urlParams.get('barbeiro');
+            if (barbeiro) document.getElementById('barbeiro').value = barbeiro;
+            const data = urlParams.get('data');
+            if (data) document.getElementById('data').value = data;
+            const hora = urlParams.get('hora');
+            if (hora) document.getElementById('hora').value = hora;
+        });
+    </script>
 </body>
 </html>

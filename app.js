@@ -78,7 +78,84 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (response.ok) {
                     alert('Login bem-sucedido!');
                     localStorage.setItem('usuarioLogado', JSON.stringify(data.user));
-                    window.location.href = 'agendamento.html'; // Redireciona para a página de agendamento
+                    window.location.href = 'index.html'; // Redireciona para a página inicial
+                } else {
+                    alert(data.error);
+                }
+            } catch (error) {
+                alert('Erro ao conectar ao servidor.');
+            }
+        });
+    }
+
+    // Lógica para a página de Cadastro de Barbeiro
+    const cadastroBarbeiroForm = document.getElementById('cadastro-barbeiro-form');
+    if (cadastroBarbeiroForm) {
+        cadastroBarbeiroForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const nome = document.getElementById('nome-barbeiro').value.trim();
+            const email = document.getElementById('email-barbeiro').value.trim();
+            const senha = document.getElementById('senha-barbeiro').value;
+            const confirmarSenha = document.getElementById('confirmar-senha-barbeiro').value;
+            const especialidade = document.getElementById('especialidade').value;
+
+            if (!nome || !email || !senha || !especialidade) {
+                alert('Preencha todos os campos.');
+                return;
+            }
+            if (!validarEmail(email)) {
+                alert('E-mail inválido.');
+                return;
+            }
+            if (!validarSenha(senha)) {
+                alert('A senha deve ter pelo menos 6 caracteres, incluindo letras e números.');
+                return;
+            }
+            if (senha !== confirmarSenha) {
+                alert('As senhas não coincidem!');
+                return;
+            }
+
+            try {
+                const response = await fetch('http://localhost:3000/register-barber', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ nome, email, senha, especialidade })
+                });
+                const data = await response.json();
+                if (response.ok) {
+                    alert(`Barbeiro ${nome} cadastrado com sucesso!`);
+                    window.location.href = 'login-barbeiro.html';
+                } else {
+                    alert(data.error);
+                }
+            } catch (error) {
+                alert('Erro ao conectar ao servidor.');
+            }
+        });
+    }
+
+    // Lógica para a página de Login de Barbeiro
+    const loginBarbeiroForm = document.getElementById('login-barbeiro-form');
+    if (loginBarbeiroForm) {
+        loginBarbeiroForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const email = document.getElementById('email-barbeiro-login').value.trim();
+            const senha = document.getElementById('senha-barbeiro-login').value;
+
+            try {
+                const response = await fetch('http://localhost:3000/login-barber', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email, senha })
+                });
+                const data = await response.json();
+                if (response.ok) {
+                    alert('Login bem-sucedido!');
+                    localStorage.setItem('barbeiroLogado', JSON.stringify(data.barber));
+                    window.location.href = 'dashboard-barbeiro.html';
                 } else {
                     alert(data.error);
                 }
@@ -102,10 +179,11 @@ document.addEventListener('DOMContentLoaded', () => {
             }
 
             const servico = document.getElementById('servico').value;
+            const barbeiro = document.getElementById('barbeiro').value;
             const data = document.getElementById('data').value;
             const hora = document.getElementById('hora').value;
 
-            if (!servico || !data || !hora) {
+            if (!servico || !barbeiro || !data || !hora) {
                 alert('Preencha todos os campos.');
                 return;
             }
@@ -114,7 +192,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 const response = await fetch('http://localhost:3000/appointments', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ usuario_email: usuarioLogado.email, servico, data, hora })
+                    body: JSON.stringify({ usuario_email: usuarioLogado.email, barber_email: barbeiro, servico, data, hora })
                 });
                 const dataResp = await response.json();
                 if (response.ok) {

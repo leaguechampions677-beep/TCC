@@ -8,4 +8,6 @@
 - [x] Implementar endpoints API: POST /register, POST /login, POST /appointments, GET /appointments/:email, POST /payments
 - [x] Atualizar app.js para usar fetch() ao invés de localStorage
 - [x] Atualizar pagamento.js para usar fetch() ao invés de localStorage
+- [x] Melhorar página inicial com barbeiros, horários e agendamentos
+- [x] Adicionar sistema de barbeiros: cadastro, login, dashboard com agendamentos
 - [ ] Testar fluxo completo: cadastro, login, agendamento, pagamento
