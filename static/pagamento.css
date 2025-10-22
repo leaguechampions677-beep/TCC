@@ -1,0 +1,45 @@
+.pagamento-container {
+    max-width: 600px;
+    margin: 3rem auto;
+    padding: 2rem;
+    background-color: #1a1a1a;
+    border-radius: 8px;
+    box-shadow: 0 4px 15px rgba(255, 215, 0, 0.2);
+}
+
+.pagamento-container h2 {
+    text-align: center;
+    color: #FFD700;
+    margin-bottom: 2rem;
+}
+
+#resumo-agendamento {
+    background-color: #333;
+    padding: 1rem;
+    border-radius: 4px;
+    margin-bottom: 2rem;
+}
+
+#resumo-agendamento p {
+    margin: 0.5rem 0;
+}
+
+.expiracao-cvv {
+    display: flex;
+    gap: 1rem;
+}
+
+.expiracao-cvv > div {
+    flex-grow: 1;
+}
+
+.qrcode {
+    display: block;
+    margin: 1rem auto;
+}
+
+#chave-pix {
+    font-weight: bold;
+    color: #DAA520;
+    word-wrap: break-word;
+}

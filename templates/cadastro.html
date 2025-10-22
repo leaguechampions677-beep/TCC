@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cadastro - Barbearia Fio de Ouro</title>
+    <link rel="stylesheet" href="../static/styles.css">
+    <link rel="stylesheet" href="../static/login.css">
+</head>
+<body>
+    <header>
+        <div class="logo">
+            <h1>FIO DE OURO</h1>
+        </div>
+        <nav>
+            <ul>
+                <li><a href="index.html">Início</a></li>
+                <li><a href="agendamento.html">Agendar</a></li>
+                <li><a href="login.html">Login</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main class="form-container">
+        <h2>Cadastre-se</h2>
+        <form id="cadastro-form">
+            <div class="form-group">
+                <label for="nome-cadastro">Nome Completo:</label>
+                <input type="text" id="nome-cadastro" name="nome" required>
+            </div>
+            <div class="form-group">
+                <label for="email-cadastro">E-mail:</label>
+                <input type="email" id="email-cadastro" name="email" required>
+            </div>
+            <div class="form-group">
+                <label for="senha-cadastro">Senha:</label>
+                <input type="password" id="senha-cadastro" name="senha" required>
+            </div>
+            <div class="form-group">
+                <label for="confirmar-senha">Confirmar Senha:</label>
+                <input type="password" id="confirmar-senha" name="confirmar-senha" required>
+            </div>
+            <button type="submit">Criar Conta</button>
+        </form>
+        <p class="link-login">Já tem uma conta? <a href="login.html">Faça login</a></p>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 Barbearia Fio de Ouro. Todos os direitos reservados.</p>
+    </footer>
+
+    <script src="../app.js"></script>
+</body>
+</html>
