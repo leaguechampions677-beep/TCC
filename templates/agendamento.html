@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Agendamento - Barbearia Fio de Ouro</title>
+    <link rel="stylesheet" href="../static/styles.css">
+    <link rel="stylesheet" href="../static/login.css">
+</head>
+<body>
+    <header>
+        <div class="logo">
+            <h1>FIO DE OURO</h1>
+        </div>
+        <nav>
+            <ul>
+                <li><a href="index.html">Início</a></li>
+                <li><a href="agendamento.html">Agendar</a></li>
+                <li><a href="login.html">Login</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main class="form-container">
+        <h2>Agendar Serviço</h2>
+        <form id="agendamento-form">
+            <div class="form-group">
+                <label for="servico">Serviço:</label>
+                <select id="servico" name="servico" required>
+                    <option value="">Selecione um serviço</option>
+                    <option value="Corte de Cabelo">Corte de Cabelo - R$ 30,00</option>
+                    <option value="Barba">Barba - R$ 20,00</option>
+                    <option value="Corte + Barba">Corte + Barba - R$ 50,00</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="data">Data:</label>
+                <input type="date" id="data" name="data" required>
+            </div>
+            <div class="form-group">
+                <label for="hora">Hora:</label>
+                <select id="hora" name="hora" required>
+                    <option value="">Selecione uma hora</option>
+                    <option value="09:00">09:00</option>
+                    <option value="10:00">10:00</option>
+                    <option value="11:00">11:00</option>
+                    <option value="14:00">14:00</option>
+                    <option value="15:00">15:00</option>
+                    <option value="16:00">16:00</option>
+                </select>
+            </div>
+            <button type="submit">Agendar</button>
+        </form>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 Barbearia Fio de Ouro. Todos os direitos reservados.</p>
+    </footer>
+
+    <script src="../app.js"></script>
+</body>
+</html>

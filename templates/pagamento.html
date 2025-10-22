@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pagamento - Barbearia Fio de Ouro</title>
+    <link rel="stylesheet" href="../static/styles.css">
+    <link rel="stylesheet" href="../static/pagamento.css">
+</head>
+<body>
+    <header>
+        <div class="logo">
+            <h1>FIO DE OURO</h1>
+        </div>
+        <nav>
+            <ul>
+                <li><a href="index.html">Início</a></li>
+                <li><a href="agendamento.html">Agendar</a></li>
+                <li><a href="login.html">Login</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main class="pagamento-container">
+        <h2>Resumo do Agendamento e Pagamento</h2>
+        <div id="resumo-agendamento">
+            </div>
+
+        <form id="pagamento-form">
+            <div class="form-group">
+                <label for="metodo-pagamento">Método de Pagamento:</label>
+                <select id="metodo-pagamento" name="metodo-pagamento">
+                    <option value="cartao">Cartão de Crédito</option>
+                    <option value="pix">Pix</option>
+                </select>
+            </div>
+            <div class="form-group" id="cartao-fields">
+                <label for="numero-cartao">Número do Cartão:</label>
+                <input type="text" id="numero-cartao" placeholder="XXXX XXXX XXXX XXXX" required>
+                <label for="nome-cartao">Nome no Cartão:</label>
+                <input type="text" id="nome-cartao" required>
+                <div class="expiracao-cvv">
+                    <div>
+                        <label for="expiracao">Expiração:</label>
+                        <input type="text" id="expiracao" placeholder="MM/AA" required>
+                    </div>
+                    <div>
+                        <label for="cvv">CVV:</label>
+                        <input type="text" id="cvv" placeholder="XXX" required>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group" id="pix-fields" style="display: none;">
+                <p>Escaneie o QR Code abaixo para realizar o pagamento via Pix.</p>
+                <img src="https://via.placeholder.com/200" alt="QR Code Pix" class="qrcode">
+                <p>Ou copie a chave Pix: <span id="chave-pix">xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx</span></p>
+            </div>
+            <button type="submit">Finalizar Pagamento</button>
+        </form>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 Barbearia Fio de Ouro. Todos os direitos reservados.</p>
+    </footer>
+
+    <script src="../pagamento.js"></script>
+</body>
+</html>
