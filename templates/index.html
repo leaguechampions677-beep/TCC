@@ -15,35 +15,82 @@
             <ul>
                 <li><a href="index.html">Início</a></li>
                 <li><a href="agendamento.html">Agendar</a></li>
-                <li><a href="login.html">Login</a></li>
-                <li><a href="cadastro-barbeiro.html">Cadastro Barbeiro</a></li>
-                <li><a href="login-barbeiro.html">Login Barbeiro</a></li>
+                <li id="login-link"><a href="login.html">Login</a></li>
+                <li><a href="barbeiro.html">Área Barbeiro</a></li>
+                <li id="logout-link" style="display: none;"><a href="#" id="logout-btn">Logout</a></li>
             </ul>
         </nav>
     </header>
 
     <main>
         <section class="hero">
-            <h2>Bem-vindo à Barbearia Fio de Ouro</h2>
-            <p>Agende seu corte com os melhores barbeiros da cidade.</p>
+            <h2><i class="fas fa-cut"></i> Bem-vindo à Barbearia Fio de Ouro</h2>
+            <p>Agende seu corte com os melhores barbeiros da cidade. Estilo, precisão e atendimento de primeira.</p>
+            <a href="agendamento.html" class="btn-agendar">Agendar Agora <i class="fas fa-calendar-check"></i></a>
         </section>
 
         <section class="barbeiros">
-            <h2>Nossos Barbeiros</h2>
+            <h2><i class="fas fa-users"></i> Nossos Barbeiros</h2>
             <div id="barbeiros-list" class="barbeiros-grid">
                 <!-- Barbeiros serão carregados aqui -->
             </div>
         </section>
 
         <section class="horarios">
-            <h2>Horários Disponíveis</h2>
+            <h2><i class="fas fa-clock"></i> Horários Disponíveis</h2>
             <div id="horarios-list" class="horarios-grid">
                 <!-- Horários serão carregados aqui -->
+            </div>
+            <a href="agendamento.html" class="btn-agendar">Agendar Agora <i class="fas fa-arrow-right"></i></a>
+        </section>
+
+        <section class="galeria">
+            <h2><i class="fas fa-images"></i> Nossa Galeria</h2>
+            <div class="galeria-grid">
+                <div class="galeria-item">
+                    <img src="https://images.unsplash.com/photo-1503951914875-452162b0f3f1?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80" alt="Corte moderno">
+                    <div class="overlay">
+                        <h4>Corte Moderno</h4>
+                        <p>Estilos contemporâneos para o homem moderno</p>
+                    </div>
+                </div>
+                <div class="galeria-item">
+                    <img src="https://images.unsplash.com/photo-1621605815971-fbc98d665033?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2071&q=80" alt="Barba bem feita">
+                    <div class="overlay">
+                        <h4>Barba Perfeita</h4>
+                        <p>Contornos precisos e acabamento impecável</p>
+                    </div>
+                </div>
+                <div class="galeria-item">
+                    <img src="https://images.unsplash.com/photo-1622296089863-9a7a2d5b5b5b?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80" alt="Ambiente acolhedor">
+                    <div class="overlay">
+                        <h4>Ambiente Acolhedor</h4>
+                        <p>Espaço confortável para seu momento de relaxamento</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="depoimentos">
+            <h2><i class="fas fa-star"></i> Depoimentos</h2>
+            <div class="depoimentos-grid">
+                <div class="depoimento-card">
+                    <p>"Excelente atendimento! Os barbeiros são profissionais e o resultado sempre fica perfeito. Recomendo!"</p>
+                    <div class="autor">- João Silva</div>
+                </div>
+                <div class="depoimento-card">
+                    <p>"Ambiente agradável e preços justos. Sempre saio satisfeito com meu corte e barba."</p>
+                    <div class="autor">- Carlos Santos</div>
+                </div>
+                <div class="depoimento-card">
+                    <p>"Melhor barbearia da cidade! Atendimento rápido, profissionais qualificados e muito cuidado."</p>
+                    <div class="autor">- Roberto Lima</div>
+                </div>
             </div>
         </section>
 
         <section class="meus-agendamentos">
-            <h2>Meus Agendamentos</h2>
+            <h2><i class="fas fa-calendar-alt"></i> Meus Agendamentos</h2>
             <div id="agendamentos-list">
                 <!-- Agendamentos serão carregados aqui -->
             </div>
@@ -64,6 +111,7 @@
                     div.innerHTML = `
                         <h3>${barbeiro.nome}</h3>
                         <p>${barbeiro.especialidade}</p>
+                        <a href="agendamento.html?barbeiro=${encodeURIComponent(barbeiro.email)}" class="btn-agendar">Agendar</a>
                     `;
                     barbeirosList.appendChild(div);
                 });
@@ -86,8 +134,18 @@
                 console.error('Erro ao carregar horários:', error);
             }
 
-            // Carregar agendamentos do usuário logado
+            // Verificar login e ajustar navegação
             const usuarioLogado = JSON.parse(localStorage.getItem('usuarioLogado'));
+            if (usuarioLogado) {
+                document.getElementById('login-link').style.display = 'none';
+                document.getElementById('logout-link').style.display = 'block';
+                document.getElementById('logout-btn').addEventListener('click', () => {
+                    localStorage.removeItem('usuarioLogado');
+                    location.reload();
+                });
+            }
+
+            // Carregar agendamentos do usuário logado
             if (usuarioLogado) {
                 try {
                     const response = await fetch(`/appointments/${usuarioLogado.email}`);
@@ -102,6 +160,7 @@
                                 <p><strong>Barbeiro:</strong> ${agendamento.barbeiro_nome}</p>
                                 <p><strong>Data:</strong> ${agendamento.data}</p>
                                 <p><strong>Hora:</strong> ${agendamento.hora}</p>
+                                ${agendamento.status === 'cancelado' ? `<p><strong>Status:</strong> Cancelado - ${agendamento.motivo_cancelamento}</p>` : ''}
                             `;
                             agendamentosList.appendChild(div);
                         });

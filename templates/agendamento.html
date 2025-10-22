@@ -22,10 +22,10 @@
     </header>
 
     <main class="form-container">
-        <h2>Agendar Serviço</h2>
+        <h2><i class="fas fa-calendar-plus"></i> Agendar Serviço</h2>
         <form id="agendamento-form">
             <div class="form-group">
-                <label for="servico">Serviço:</label>
+                <label for="servico"><i class="fas fa-scissors"></i> Serviço:</label>
                 <select id="servico" name="servico" required>
                     <option value="">Selecione um serviço</option>
                     <option value="Corte de Cabelo">Corte de Cabelo - R$ 30,00</option>
@@ -34,18 +34,18 @@
                 </select>
             </div>
             <div class="form-group">
-                <label for="barbeiro">Barbeiro:</label>
+                <label for="barbeiro"><i class="fas fa-user-tie"></i> Barbeiro:</label>
                 <select id="barbeiro" name="barbeiro" required>
                     <option value="">Selecione um barbeiro</option>
                     <!-- Barbeiros serão carregados aqui -->
                 </select>
             </div>
             <div class="form-group">
-                <label for="data">Data:</label>
+                <label for="data"><i class="fas fa-calendar-day"></i> Data:</label>
                 <input type="date" id="data" name="data" required>
             </div>
             <div class="form-group">
-                <label for="hora">Hora:</label>
+                <label for="hora"><i class="fas fa-clock"></i> Hora:</label>
                 <select id="hora" name="hora" required>
                     <option value="">Selecione uma hora</option>
                     <option value="09:00">09:00</option>
@@ -56,7 +56,7 @@
                     <option value="16:00">16:00</option>
                 </select>
             </div>
-            <button type="submit">Agendar</button>
+            <button type="submit"><i class="fas fa-check"></i> Agendar</button>
         </form>
     </main>
 
@@ -87,7 +87,12 @@
             const servico = urlParams.get('servico');
             if (servico) document.getElementById('servico').value = servico;
             const barbeiro = urlParams.get('barbeiro');
-            if (barbeiro) document.getElementById('barbeiro').value = barbeiro;
+            if (barbeiro) {
+                // Aguardar carregamento dos barbeiros antes de definir valor
+                setTimeout(() => {
+                    document.getElementById('barbeiro').value = barbeiro;
+                }, 100);
+            }
             const data = urlParams.get('data');
             if (data) document.getElementById('data').value = data;
             const hora = urlParams.get('hora');

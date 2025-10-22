@@ -14,7 +14,7 @@
         </div>
         <nav>
             <ul>
-                <li><a href="/index.html">Início</a></li>
+                <li><a href="index.html">Início</a></li>
                 <li><a href="#" id="logout-barbeiro">Sair</a></li>
             </ul>
         </nav>
@@ -22,12 +22,17 @@
 
     <main>
         <section class="dashboard">
-            <h2>Dashboard do Barbeiro</h2>
+            <h2><i class="fas fa-tachometer-alt"></i> Dashboard do Barbeiro</h2>
             <div id="barbeiro-info">
                 <!-- Informações do barbeiro serão carregadas aqui -->
             </div>
 
-            <h3>Meus Agendamentos</h3>
+            <h3><i class="fas fa-cogs"></i> Gerenciar Serviços</h3>
+            <div id="servicos-barbeiro">
+                <!-- Serviços serão carregados aqui -->
+            </div>
+
+            <h3><i class="fas fa-calendar-check"></i> Meus Agendamentos</h3>
             <div id="agendamentos-barbeiro">
                 <!-- Agendamentos serão carregados aqui -->
             </div>
@@ -43,7 +48,7 @@
         document.addEventListener('DOMContentLoaded', async () => {
             const barbeiroLogado = JSON.parse(localStorage.getItem('barbeiroLogado'));
             if (!barbeiroLogado) {
-                window.location.href = '/login-barbeiro.html';
+                window.location.href = 'barbeiro.html';
                 return;
             }
 
@@ -53,6 +58,23 @@
                 <p><strong>E-mail:</strong> ${barbeiroLogado.email}</p>
                 <p><strong>Especialidade:</strong> ${barbeiroLogado.especialidade}</p>
             `;
+
+            // Carregar serviços
+            const servicos = [
+                { nome: 'Corte de Cabelo', preco: 30 },
+                { nome: 'Barba', preco: 20 },
+                { nome: 'Corte + Barba', preco: 50 }
+            ];
+            const servicosDiv = document.getElementById('servicos-barbeiro');
+            servicos.forEach(servico => {
+                const div = document.createElement('div');
+                div.className = 'servico-item';
+                div.innerHTML = `
+                    <p><strong>${servico.nome}:</strong> R$ <input type="number" value="${servico.preco}" id="preco-${servico.nome.replace(/\s+/g, '-').toLowerCase()}" min="0" step="0.01">,00</p>
+                    <button onclick="atualizarPreco('${servico.nome}')">Atualizar Preço</button>
+                `;
+                servicosDiv.appendChild(div);
+            });
 
             // Carregar agendamentos
             try {
@@ -68,6 +90,7 @@
                             <p><strong>Serviço:</strong> ${agendamento.servico}</p>
                             <p><strong>Data:</strong> ${agendamento.data}</p>
                             <p><strong>Hora:</strong> ${agendamento.hora}</p>
+                            <button onclick="cancelarAgendamento(${agendamento.id})">Cancelar Agendamento</button>
                         `;
                         agendamentosDiv.appendChild(div);
                     });
@@ -78,10 +101,56 @@
                 console.error('Erro ao carregar agendamentos:', error);
             }
 
+            // Funções globais
+            window.atualizarPreco = async function(servicoNome) {
+                const precoInput = document.getElementById(`preco-${servicoNome.replace(/\s+/g, '-').toLowerCase()}`);
+                const novoPreco = parseFloat(precoInput.value);
+                if (isNaN(novoPreco) || novoPreco < 0) {
+                    alert('Preço inválido.');
+                    return;
+                }
+                try {
+                    const response = await fetch('/update-price', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ servico: servicoNome, preco: novoPreco })
+                    });
+                    const data = await response.json();
+                    if (response.ok) {
+                        alert('Preço atualizado com sucesso!');
+                    } else {
+                        alert(data.error);
+                    }
+                } catch (error) {
+                    alert('Erro ao atualizar preço.');
+                }
+            };
+
+            window.cancelarAgendamento = async function(agendamentoId) {
+                const motivo = prompt('Digite o motivo do cancelamento:');
+                if (!motivo) return;
+                try {
+                    const response = await fetch('/cancel-appointment', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ id: agendamentoId, motivo })
+                    });
+                    const data = await response.json();
+                    if (response.ok) {
+                        alert('Agendamento cancelado com sucesso!');
+                        location.reload();
+                    } else {
+                        alert(data.error);
+                    }
+                } catch (error) {
+                    alert('Erro ao cancelar agendamento.');
+                }
+            };
+
             // Logout
             document.getElementById('logout-barbeiro').addEventListener('click', () => {
                 localStorage.removeItem('barbeiroLogado');
-                window.location.href = '/index.html';
+                window.location.href = 'barbeiro.html';
             });
         });
     </script>

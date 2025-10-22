@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Barbearia Fio de Ouro - Área Barbeiro</title>
+    <link rel="stylesheet" href="/static/styles.css">
+    <link rel="stylesheet" href="/static/login.css">
+    <style>
+        .tab-container {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 2rem;
+        }
+        .tab-button {
+            background-color: #FFD700;
+            color: #000;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            cursor: pointer;
+            font-size: 1rem;
+            margin: 0 0.5rem;
+            border-radius: 4px;
+        }
+        .tab-button.active {
+            background-color: #DAA520;
+        }
+        .tab-content {
+            display: none;
+        }
+        .tab-content.active {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="logo">
+            <h1>FIO DE OURO</h1>
+        </div>
+        <nav>
+            <ul>
+                <li><a href="index.html">Início</a></li>
+                <li><a href="barbeiro.html">Área Barbeiro</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main class="form-container">
+        <div class="tab-container">
+            <button class="tab-button active" onclick="showTab('cadastro')">Cadastro</button>
+            <button class="tab-button" onclick="showTab('login')">Login</button>
+        </div>
+
+        <div id="cadastro-tab" class="tab-content active">
+            <h2>Cadastro de Barbeiro</h2>
+            <form id="cadastro-barbeiro-form">
+                <div class="form-group">
+                    <label for="nome-barbeiro">Nome:</label>
+                    <input type="text" id="nome-barbeiro" required>
+                </div>
+                <div class="form-group">
+                    <label for="email-barbeiro">E-mail:</label>
+                    <input type="email" id="email-barbeiro" required>
+                </div>
+                <div class="form-group">
+                    <label for="senha-barbeiro">Senha:</label>
+                    <input type="password" id="senha-barbeiro" required>
+                </div>
+                <div class="form-group">
+                    <label for="confirmar-senha-barbeiro">Confirmar Senha:</label>
+                    <input type="password" id="confirmar-senha-barbeiro" required>
+                </div>
+                <div class="form-group">
+                    <label for="especialidade">Especialidade:</label>
+                    <select id="especialidade" required>
+                        <option value="">Selecione uma especialidade</option>
+                        <option value="Cortes modernos">Cortes modernos</option>
+                        <option value="Barbas e bigodes">Barbas e bigodes</option>
+                        <option value="Cortes clássicos">Cortes clássicos</option>
+                        <option value="Cortes femininos">Cortes femininos</option>
+                        <option value="Coloração">Coloração</option>
+                    </select>
+                </div>
+                <button type="submit">Cadastrar</button>
+            </form>
+        </div>
+
+        <div id="login-tab" class="tab-content">
+            <h2>Login Barbeiro</h2>
+            <form id="login-barbeiro-form">
+                <div class="form-group">
+                    <label for="email-barbeiro-login">E-mail:</label>
+                    <input type="email" id="email-barbeiro-login" required>
+                </div>
+                <div class="form-group">
+                    <label for="senha-barbeiro-login">Senha:</label>
+                    <input type="password" id="senha-barbeiro-login" required>
+                </div>
+                <button type="submit">Entrar</button>
+            </form>
+        </div>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 Barbearia Fio de Ouro. Todos os direitos reservados.</p>
+    </footer>
+
+    <script>
+        function showTab(tab) {
+            document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+            document.querySelectorAll('.tab-button').forEach(button => button.classList.remove('active'));
+            document.getElementById(tab + '-tab').classList.add('active');
+            event.target.classList.add('active');
+        }
+    </script>
+    <script src="/app.js"></script>
+</body>
+</html>

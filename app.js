@@ -126,7 +126,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 const data = await response.json();
                 if (response.ok) {
                     alert(`Barbeiro ${nome} cadastrado com sucesso!`);
-                    window.location.href = 'login-barbeiro.html';
+                    window.location.href = 'barbeiro.html';
                 } else {
                     alert(data.error);
                 }
@@ -196,7 +196,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 });
                 const dataResp = await response.json();
                 if (response.ok) {
-                    alert('Agendamento realizado com sucesso!');
+                    alert('Agendamento realizado com sucesso! Você será redirecionado para o pagamento.');
                     localStorage.setItem('appointment_id', dataResp.id);
                     window.location.href = 'pagamento.html'; // Redireciona para pagamento
                 } else {

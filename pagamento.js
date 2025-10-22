@@ -127,7 +127,6 @@ document.addEventListener('DOMContentLoaded', async () => {
                 if (response.ok) {
                     alert('Pagamento processado com sucesso! Seu agendamento está confirmado.');
                     // Limpar dados após pagamento
-                    localStorage.removeItem('usuarioLogado');
                     localStorage.removeItem('appointment_id');
                     window.location.href = 'index.html'; // Redireciona para início
                 } else {

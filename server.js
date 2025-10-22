@@ -49,6 +49,8 @@ function createTables() {
         servico TEXT NOT NULL,
         data TEXT NOT NULL,
         hora TEXT NOT NULL,
+        status TEXT DEFAULT 'ativo',
+        motivo_cancelamento TEXT,
         FOREIGN KEY (usuario_email) REFERENCES users (email),
         FOREIGN KEY (barber_email) REFERENCES barbers (email)
     )`);
@@ -182,7 +184,7 @@ app.post('/login-barber', (req, res) => {
 
 // Obter barbeiros
 app.get('/barbeiros', (req, res) => {
-    const sql = 'SELECT id, nome, especialidade FROM barbers';
+    const sql = 'SELECT id, nome, especialidade, email FROM barbers';
     db.all(sql, [], (err, rows) => {
         if (err) {
             return res.status(500).json({ error: 'Erro ao obter barbeiros.' });
@@ -209,6 +211,35 @@ app.get('/horarios', (req, res) => {
         '09:00', '10:00', '11:00', '14:00', '15:00', '16:00', '17:00'
     ];
     res.json(horarios);
+});
+
+// Atualizar preço do serviço
+app.post('/update-price', (req, res) => {
+    const { servico, preco } = req.body;
+    if (!servico || preco === undefined) {
+        return res.status(400).json({ error: 'Serviço e preço são obrigatórios.' });
+    }
+    // Aqui você pode armazenar em uma tabela de preços ou atualizar globalmente
+    // Por simplicidade, vamos simular uma atualização (em produção, use banco)
+    res.json({ message: 'Preço atualizado com sucesso.' });
+});
+
+// Cancelar agendamento
+app.post('/cancel-appointment', (req, res) => {
+    const { id, motivo } = req.body;
+    if (!id || !motivo) {
+        return res.status(400).json({ error: 'ID do agendamento e motivo são obrigatórios.' });
+    }
+    const sql = 'UPDATE appointments SET status = ?, motivo_cancelamento = ? WHERE id = ?';
+    db.run(sql, ['cancelado', motivo, id], function(err) {
+        if (err) {
+            return res.status(500).json({ error: 'Erro ao cancelar agendamento.' });
+        }
+        if (this.changes === 0) {
+            return res.status(404).json({ error: 'Agendamento não encontrado.' });
+        }
+        res.json({ message: 'Agendamento cancelado com sucesso.' });
+    });
 });
 
 // Iniciar servidor
