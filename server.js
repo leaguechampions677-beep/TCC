@@ -15,6 +15,11 @@ app.use(bodyParser.json());
 app.use(express.static(path.join(__dirname, 'templates')));
 app.use('/static', express.static(path.join(__dirname, 'static')));
 
+// Rota para servir index.html na raiz
+app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, 'templates', 'index.html'));
+});
+
 // Conectar ao banco de dados SQLite
 const db = new sqlite3.Database('./barbearia.db', (err) => {
     if (err) {
