@@ -41,7 +41,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }
 
             try {
-                const response = await fetch('http://localhost:3000/register', {
+                const response = await fetch('/register', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ nome, email, senha })
@@ -69,7 +69,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const senha = document.getElementById('senha-login').value;
 
             try {
-                const response = await fetch('http://localhost:3000/login', {
+                const response = await fetch('/login', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ email, senha })
@@ -118,7 +118,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }
 
             try {
-                const response = await fetch('http://localhost:3000/register-barber', {
+                const response = await fetch('/register-barber', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ nome, email, senha, especialidade })
@@ -146,7 +146,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const senha = document.getElementById('senha-barbeiro-login').value;
 
             try {
-                const response = await fetch('http://localhost:3000/login-barber', {
+                const response = await fetch('/login-barber', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ email, senha })
@@ -189,7 +189,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }
 
             try {
-                const response = await fetch('http://localhost:3000/appointments', {
+                const response = await fetch('/appointments', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ usuario_email: usuarioLogado.email, barber_email: barbeiro, servico, data, hora })

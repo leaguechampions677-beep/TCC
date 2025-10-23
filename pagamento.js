@@ -57,7 +57,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     const appointment_id = localStorage.getItem('appointment_id');
     if (usuarioLogado && appointment_id) {
         try {
-            const response = await fetch(`http://localhost:3000/appointments/${usuarioLogado.email}`);
+            const response = await fetch(`/appointments/${usuarioLogado.email}`);
             const agendamentos = await response.json();
             const agendamento = agendamentos.find(a => a.id == appointment_id);
             if (agendamento) {
@@ -118,7 +118,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             const usuarioLogado = JSON.parse(localStorage.getItem('usuarioLogado'));
             const appointment_id = localStorage.getItem('appointment_id');
             try {
-                const response = await fetch('http://localhost:3000/payments', {
+                const response = await fetch('/payments', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ usuario_email: usuarioLogado.email, appointment_id, metodo })
