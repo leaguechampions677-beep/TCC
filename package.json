@@ -2,14 +2,15 @@
   "name": "barbearia-fio-de-ouro",
   "version": "1.0.0",
   "description": "Sistema de agendamento para barbearia",
-  "main": "server.js",
+  "main": "server-supabase.js",
   "scripts": {
-    "start": "node server.js"
+    "start": "node server-supabase.js"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.76.1",
     "body-parser": "^1.20.2",
     "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
     "express": "^4.18.2",
     "sqlite3": "^5.1.6"
   },
