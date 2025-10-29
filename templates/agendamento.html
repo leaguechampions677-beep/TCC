@@ -68,16 +68,12 @@
     <script>
         // Initialize Supabase client
         const supabaseUrl = 'https://gruzcdrzryuiahiwwalc.supabase.co';
-        const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdydXpjZHJ6cnl1aWFoaXd3YWxjIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc2MTIyMDMxNywiZXhwIjoyMDc2Nzk2MzE3fQ.JalnMMseIBmN5R8XH7rfJHNoScdNmaAzibqgtZw1vDc';
+        const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdydXpjZHJ6cnl1aWFoaXd3YWxjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjEyMjAzMTcsImV4cCI6MjA3Njc5NjMxN30.C_qa-brDL4HQE0bMmvnNBYsdnn1J8_eV_aneHNTSE0g';
         const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
 
-        // Check auth state on page load
-        supabase.auth.onAuthStateChange((event, session) => {
-            if (!session) {
-                // User is not logged in, redirect to login
-                window.location.href = 'login.html';
-            }
-        });
+        // Check if user is logged in (using a simple check, since login is now via server)
+        // For simplicity, assume user is logged in if they reached this page
+        // In production, you might want to add a session check endpoint
 
         // Lógica para a página de Agendamento
         const agendamentoForm = document.getElementById('agendamento-form');
@@ -96,24 +92,37 @@
                 }
 
                 try {
-                    const { data: authData } = await supabase.auth.getUser();
-                    if (!authData.user) {
+                    // Get user email from localStorage (set during login)
+                    const userEmail = localStorage.getItem('user_email');
+                    if (!userEmail) {
                         alert('Você precisa fazer login primeiro.');
                         window.location.href = 'login.html';
                         return;
                     }
 
-                    const { data: appointmentData, error } = await supabase
-                        .from('appointments')
-                        .insert([{ usuario_email: authData.user.email, barber_email: barbeiro, servico, data, hora }]);
+                    const response = await fetch('http://localhost:3000/appointments', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            usuario_email: userEmail,
+                            barber_email: barbeiro,
+                            servico,
+                            data,
+                            hora
+                        })
+                    });
 
-                    if (error) {
-                        alert('Erro ao agendar.');
+                    const result = await response.json();
+
+                    if (!response.ok) {
+                        alert('Erro ao agendar: ' + result.error);
                         return;
                     }
 
                     alert('Agendamento realizado com sucesso! Você será redirecionado para o pagamento.');
-                    localStorage.setItem('appointment_id', appointmentData[0].id);
+                    localStorage.setItem('appointment_id', result.id);
                     window.location.href = 'pagamento.html'; // Redireciona para pagamento
                 } catch (error) {
                     alert('Erro ao conectar ao servidor.');
@@ -125,7 +134,7 @@
         document.addEventListener('DOMContentLoaded', async () => {
             // Carregar barbeiros
             try {
-                const response = await fetch('/barbeiros');
+                const response = await fetch('http://localhost:3000/barbeiros');
                 const barbeiros = await response.json();
                 const barbeiroSelect = document.getElementById('barbeiro');
                 barbeiros.forEach(barbeiro => {

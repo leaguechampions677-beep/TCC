@@ -45,7 +45,7 @@
     <script>
         // Initialize Supabase client
         const supabaseUrl = 'https://gruzcdrzryuiahiwwalc.supabase.co';
-        const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdydXpjZHJ6cnl1aWFoaXd3YWxjIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc2MTIyMDMxNywiZXhwIjoyMDc2Nzk2MzE3fQ.JalnMMseIBmN5R8XH7rfJHNoScdNmaAzibqgtZw1vDc';
+        const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdydXpjZHJ6cnl1aWFoaXd3YWxjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjEyMjAzMTcsImV4cCI6MjA3Njc5NjMxN30.C_qa-brDL4HQE0bMmvnNBYsdnn1J8_eV_aneHNTSE0g';
         const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
 
         // Lógica para a página de Login
@@ -58,17 +58,27 @@
                 const senha = document.getElementById('senha-login').value;
 
                 try {
-                    // Sign in with Supabase Auth
-                    const { data: authData, error: authError } = await supabase.auth.signInWithPassword({
-                        email,
-                        password: senha
+                    // Login via server endpoint
+                    const response = await fetch('/login', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            email,
+                            senha
+                        })
                     });
-                    if (authError) {
-                        alert('E-mail ou senha incorretos.');
+
+                    const result = await response.json();
+
+                    if (!response.ok) {
+                        alert('Erro ao fazer login: ' + result.error);
                         return;
                     }
 
                     alert('Login bem-sucedido!');
+                    localStorage.setItem('user_email', email); // Store user email for later use
                     window.location.href = 'index.html'; // Redireciona para a página inicial
                 } catch (error) {
                     alert('Erro ao conectar ao servidor.');

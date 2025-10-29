@@ -10,8 +10,8 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 
 // Configurar Supabase
-const supabaseUrl = process.env.SUPABASE_URL;
-const supabaseKey = process.env.SUPABASE_ANON_KEY;
+const supabaseUrl = process.env.SUPABASE_URL || 'https://gruzcdrzryuiahiwwalc.supabase.co';
+const supabaseKey = process.env.SUPABASE_ANON_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdydXpjZHJ6cnl1aWFoaXd3YWxjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjEyMjAzMTcsImV4cCI6MjA3Njc5NjMxN30.C_qa-brDL4HQE0bMmvnNBYsdnn1J8_eV_aneHNTSE0g';
 const supabase = createClient(supabaseUrl, supabaseKey);
 
 // Middleware
@@ -60,10 +60,12 @@ app.post('/register', async (req, res) => {
             .from('users')
             .insert([{ nome, email, senha }]);
         if (error) {
+            console.error('Erro ao inserir na tabela users:', error);
             return res.status(500).json({ error: 'Erro ao registrar usuário.' });
         }
-        res.json({ message: 'Usuário registrado com sucesso.', id: data[0].id });
+        res.json({ message: 'Usuário registrado com sucesso.', id: data ? data[0].id : null });
     } catch (err) {
+        console.error('Erro interno no register:', err);
         res.status(500).json({ error: 'Erro interno do servidor.' });
     }
 });
@@ -75,20 +77,12 @@ app.post('/login', async (req, res) => {
         return res.status(400).json({ error: 'Email e senha são obrigatórios.' });
     }
     try {
-        // Sign in with Supabase Auth
-        const { data: authData, error: authError } = await supabase.auth.signInWithPassword({
-            email,
-            password: senha
-        });
-        if (authError) {
-            return res.status(401).json({ error: 'E-mail ou senha incorretos.' });
-        }
-
-        // Get user data from users table
+        // Get user data from users table directly
         const { data, error } = await supabase
             .from('users')
             .select('*')
             .eq('email', email)
+            .eq('senha', senha)
             .single();
         if (error || !data) {
             return res.status(401).json({ error: 'E-mail ou senha incorretos.' });
@@ -101,19 +95,42 @@ app.post('/login', async (req, res) => {
 
 // Agendar
 app.post('/appointments', async (req, res) => {
+    console.log("📩 Requisição recebida:", req.body);
     const { usuario_email, barber_email, servico, data: dataAgendamento, hora } = req.body;
     if (!usuario_email || !barber_email || !servico || !dataAgendamento || !hora) {
         return res.status(400).json({ error: 'Todos os campos são obrigatórios.' });
     }
     try {
+        // Verificar se o usuário existe
+        const { data: userData, error: userError } = await supabase
+            .from('users')
+            .select('email')
+            .eq('email', usuario_email)
+            .single();
+        if (userError || !userData) {
+            return res.status(400).json({ error: 'Usuário não encontrado.' });
+        }
+
+        // Verificar se o barbeiro existe
+        const { data: barberData, error: barberError } = await supabase
+            .from('barbers')
+            .select('email')
+            .eq('email', barber_email)
+            .single();
+        if (barberError || !barberData) {
+            return res.status(400).json({ error: 'Barbeiro não encontrado.' });
+        }
+
         const { data, error } = await supabase
             .from('appointments')
             .insert([{ usuario_email, barber_email, servico, data: dataAgendamento, hora }]);
         if (error) {
+            console.error('Erro ao agendar:', error);
             return res.status(500).json({ error: 'Erro ao agendar.' });
         }
-        res.json({ message: 'Agendamento realizado com sucesso.', id: data[0].id });
+        res.json({ message: 'Agendamento realizado com sucesso.', id: data ? data[0].id : null });
     } catch (err) {
+        console.error('Erro interno:', err);
         res.status(500).json({ error: 'Erro interno do servidor.' });
     }
 });
@@ -139,18 +156,18 @@ app.get('/appointments/:email', async (req, res) => {
 
 // Pagar
 app.post('/payments', async (req, res) => {
-    const { usuario_email, appointment_id, metodo } = req.body;
+    const { usuario_email, appointment_id, metodo, valor } = req.body;
     if (!usuario_email || !appointment_id || !metodo) {
         return res.status(400).json({ error: 'Dados de pagamento incompletos.' });
     }
     try {
         const { data, error } = await supabase
             .from('payments')
-            .insert([{ usuario_email, appointment_id, metodo, status: 'confirmado' }]);
+            .insert([{ usuario_email, appointment_id, metodo, valor, status: 'confirmado' }]);
         if (error) {
             return res.status(500).json({ error: 'Erro ao processar pagamento.' });
         }
-        res.json({ message: 'Pagamento processado com sucesso.', id: data[0].id });
+        res.json({ message: 'Pagamento processado com sucesso.', id: data ? data[0].id : null });
     } catch (err) {
         res.status(500).json({ error: 'Erro interno do servidor.' });
     }
@@ -172,7 +189,7 @@ app.post('/register-barber', async (req, res) => {
             }
             return res.status(500).json({ error: 'Erro ao registrar barbeiro.' });
         }
-        res.json({ message: 'Barbeiro registrado com sucesso.', id: data[0].id });
+        res.json({ message: 'Barbeiro registrado com sucesso.', id: data ? data[0].id : null });
     } catch (err) {
         res.status(500).json({ error: 'Erro interno do servidor.' });
     }
@@ -220,7 +237,7 @@ app.get('/barber-appointments/:email', async (req, res) => {
     const email = req.params.email;
     try {
         const { data, error } = await supabase
-            .from('barber_appointments')
+            .from('appointments')
             .select('*, users!inner(nome)')
             .eq('barber_email', email)
             .order('data', { ascending: false })
