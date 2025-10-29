@@ -62,7 +62,7 @@
                     </div>
                 </div>
                 <div class="galeria-item">
-                    <img src="https://images.unsplash.com/photo-1622296089863-9a7a7d7b4b4b?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80" alt="Ambiente acolhedor">
+                    <img src="https://images.unsplash.com/photo-1585747860715-2ba37e788b70?ixlib=rb-4.0.3&auto=format&fit=crop&w=2074&q=80" alt="Ambiente acolhedor">
                     <div class="overlay">
                         <h4>Ambiente Acolhedor</h4>
                         <p>Espaço confortável para seu momento de relaxamento</p>
@@ -97,6 +97,60 @@
         </section>
     </main>
 
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script>
+        // Initialize Supabase client
+        const supabaseUrl = 'https://gruzcdrzryuiahiwwalc.supabase.co'; // Your Supabase Project URL
+        const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdydXpjZHJ6cnl1aWFoaXd3YWxjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjEyMjAzMTcsImV4cCI6MjA3Njc5NjMxN30.C_qa-brDL4HQE0bMmvnNBYsdnn1J8_eV_aneHNTSE0g'; // Your anon public key
+        const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
+
+        // Check auth state on page load
+        supabase.auth.onAuthStateChange((event, session) => {
+            if (session) {
+                // User is logged in
+                document.getElementById('login-link').style.display = 'none';
+                document.getElementById('logout-link').style.display = 'block';
+                document.getElementById('logout-btn').addEventListener('click', async () => {
+                    await supabase.auth.signOut();
+                    location.reload();
+                });
+                loadUserData(session.user);
+            } else {
+                // User is not logged in
+                document.getElementById('login-link').style.display = 'block';
+                document.getElementById('logout-link').style.display = 'none';
+            }
+        });
+
+        async function loadUserData(user) {
+            // Load appointments for logged-in user
+            try {
+                const { data: appointments } = await supabase
+                    .from('appointments')
+                    .select('*, barbers!inner(nome)')
+                    .eq('usuario_email', user.email)
+                    .order('data', { ascending: false });
+                const agendamentosList = document.getElementById('agendamentos-list');
+                if (appointments.length > 0) {
+                    appointments.forEach(agendamento => {
+                        const div = document.createElement('div');
+                        div.className = 'agendamento-item';
+                        div.innerHTML = `
+                            <p><strong>Serviço:</strong> ${agendamento.servico}</p>
+                            <p><strong>Barbeiro:</strong> ${agendamento.barbers.nome}</p>
+                            <p><strong>Data:</strong> ${agendamento.data}</p>
+                            <p><strong>Hora:</strong> ${agendamento.hora}</p>
+                        `;
+                        agendamentosList.appendChild(div);
+                    });
+                } else {
+                    agendamentosList.innerHTML = '<p>Nenhum agendamento encontrado.</p>';
+                }
+            } catch (error) {
+                console.error('Erro ao carregar agendamentos:', error);
+            }
+        }
+    </script>
     <script src="/app.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', async () => {

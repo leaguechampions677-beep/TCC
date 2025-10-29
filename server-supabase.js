@@ -19,8 +19,12 @@ app.use(cors());
 app.use(bodyParser.json());
 
 // Servir arquivos estáticos
+app.use(express.static(__dirname)); // Serve arquivos da raiz (app.js, pagamento.js, etc.)
 app.use(express.static(path.join(__dirname, 'templates')));
 app.use('/static', express.static(path.join(__dirname, 'static')));
+
+// Rota para favicon (evita erro 404)
+app.get('/favicon.ico', (req, res) => res.status(204).end());
 
 // Rota para servir index.html na raiz
 app.get('/', (req, res) => {
@@ -36,13 +40,26 @@ app.post('/register', async (req, res) => {
         return res.status(400).json({ error: 'Nome, email e senha são obrigatórios.' });
     }
     try {
+        // Create user with Supabase Auth
+        const { data: authData, error: authError } = await supabase.auth.signUp({
+            email,
+            password: senha,
+            options: {
+                data: { nome }
+            }
+        });
+        if (authError) {
+            if (authError.message.includes('already registered')) {
+                return res.status(400).json({ error: 'E-mail já cadastrado.' });
+            }
+            return res.status(500).json({ error: 'Erro ao registrar usuário.' });
+        }
+
+        // Insert into users table
         const { data, error } = await supabase
             .from('users')
             .insert([{ nome, email, senha }]);
         if (error) {
-            if (error.code === '23505') { // Unique violation
-                return res.status(400).json({ error: 'E-mail já cadastrado.' });
-            }
             return res.status(500).json({ error: 'Erro ao registrar usuário.' });
         }
         res.json({ message: 'Usuário registrado com sucesso.', id: data[0].id });
@@ -58,11 +75,20 @@ app.post('/login', async (req, res) => {
         return res.status(400).json({ error: 'Email e senha são obrigatórios.' });
     }
     try {
+        // Sign in with Supabase Auth
+        const { data: authData, error: authError } = await supabase.auth.signInWithPassword({
+            email,
+            password: senha
+        });
+        if (authError) {
+            return res.status(401).json({ error: 'E-mail ou senha incorretos.' });
+        }
+
+        // Get user data from users table
         const { data, error } = await supabase
             .from('users')
             .select('*')
             .eq('email', email)
-            .eq('senha', senha)
             .single();
         if (error || !data) {
             return res.status(401).json({ error: 'E-mail ou senha incorretos.' });

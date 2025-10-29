@@ -49,6 +49,78 @@
         <p>&copy; 2024 Barbearia Fio de Ouro. Todos os direitos reservados.</p>
     </footer>
 
-    <script src="/app.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script>
+        // Initialize Supabase client
+        const supabaseUrl = 'https://gruzcdrzryuiahiwwalc.supabase.co';
+        const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdydXpjZHJ6cnl1aWFoaXd3YWxjIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc2MTIyMDMxNywiZXhwIjoyMDc2Nzk2MzE3fQ.JalnMMseIBmN5R8XH7rfJHNoScdNmaAzibqgtZw1vDc';
+        const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
+
+        // Função para validar e-mail
+        function validarEmail(email) {
+            const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            return regex.test(email);
+        }
+
+        // Função para validar força da senha (mínimo 6 caracteres, com letra e número)
+        function validarSenha(senha) {
+            return senha.length >= 6 && /[a-zA-Z]/.test(senha) && /\d/.test(senha);
+        }
+
+        // Lógica para a página de Cadastro
+        const cadastroForm = document.getElementById('cadastro-form');
+        if (cadastroForm) {
+            cadastroForm.addEventListener('submit', async (e) => {
+                e.preventDefault(); // Impede o envio padrão do formulário
+
+                const nome = document.getElementById('nome-cadastro').value.trim();
+                const email = document.getElementById('email-cadastro').value.trim();
+                const senha = document.getElementById('senha-cadastro').value;
+                const confirmarSenha = document.getElementById('confirmar-senha').value;
+
+                // Validações
+                if (!nome) {
+                    alert('Nome é obrigatório.');
+                    return;
+                }
+                if (!validarEmail(email)) {
+                    alert('E-mail inválido.');
+                    return;
+                }
+                if (!validarSenha(senha)) {
+                    alert('A senha deve ter pelo menos 6 caracteres, incluindo letras e números.');
+                    return;
+                }
+                if (senha !== confirmarSenha) {
+                    alert('As senhas não coincidem!');
+                    return;
+                }
+
+                try {
+                    // Create user with Supabase Auth
+                    const { data: authData, error: authError } = await supabase.auth.signUp({
+                        email,
+                        password: senha,
+                        options: {
+                            data: { nome }
+                        }
+                    });
+                    if (authError) {
+                        if (authError.message.includes('already registered')) {
+                            alert('E-mail já cadastrado.');
+                        } else {
+                            alert('Erro ao registrar usuário.');
+                        }
+                        return;
+                    }
+
+                    alert(`Usuário ${nome} cadastrado com sucesso!`);
+                    window.location.href = 'login.html'; // Redireciona para a página de login
+                } catch (error) {
+                    alert('Erro ao conectar ao servidor.');
+                }
+            });
+        }
+    </script>
 </body>
 </html>

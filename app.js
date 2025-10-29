@@ -155,7 +155,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (response.ok) {
                     alert('Login bem-sucedido!');
                     localStorage.setItem('barbeiroLogado', JSON.stringify(data.barber));
-                    window.location.href = 'dashboard-barbeiro.html';
+                    window.location.href = 'dashboard-barbeiro.html'; // Redireciona para o dashboard do barbeiro
                 } else {
                     alert(data.error);
                 }
