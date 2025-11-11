@@ -100,7 +100,7 @@
                         return;
                     }
 
-                    const response = await fetch('http://localhost:3000/appointments', {
+                    const response = await fetch('/appointments', {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json'
@@ -134,7 +134,7 @@
         document.addEventListener('DOMContentLoaded', async () => {
             // Carregar barbeiros
             try {
-                const response = await fetch('http://localhost:3000/barbeiros');
+                const response = await fetch('/barbeiros');
                 const barbeiros = await response.json();
                 const barbeiroSelect = document.getElementById('barbeiro');
                 barbeiros.forEach(barbeiro => {

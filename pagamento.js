@@ -73,7 +73,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     console.log('appointment_id:', appointment_id);
     if (userEmail && appointment_id) {
         try {
-            const response = await fetch(`http://localhost:3000/appointments/${userEmail}`);
+            const response = await fetch(`/appointments/${userEmail}`);
             const agendamentos = await response.json();
             console.log('agendamentos:', agendamentos);
             // Encontrar o agendamento mais recente (último da lista, já que está ordenado por data/hora desc)
@@ -157,7 +157,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             const appointment_id = localStorage.getItem('appointment_id');
             const valor = localStorage.getItem('appointment_value');
             try {
-                const response = await fetch('http://localhost:3000/payments', {
+                const response = await fetch('/payments', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ usuario_email: userEmail, appointment_id, metodo, valor })
